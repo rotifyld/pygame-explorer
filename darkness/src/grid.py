@@ -4,7 +4,7 @@ from random import random
 
 import pygame
 
-from src.Config import Config
+from darkness.src.Config import Config
 
 
 def tab_copy(tab):

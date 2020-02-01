@@ -1,7 +1,7 @@
 import pygame
 
-from src.Config import Config
-from src.Game import Game
+from darkness.src.Config import Config
+from darkness.src.Game import Game
 
 
 def main():
