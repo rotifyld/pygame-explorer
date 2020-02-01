@@ -1,7 +1,7 @@
 import pygame
 
-from src.Config import Config
-from src.Grid import Grid
+from darkness.src.config import Config
+from darkness.src.grid import Grid
 
 
 class Game:

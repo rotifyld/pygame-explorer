@@ -1,6 +1,6 @@
 Config = {
     'game': {
-        'caption': 'Anaconda',
+        'caption': 'Darkness',
         'height': 600,
         'width': 800,
         'cell_size': 10,
