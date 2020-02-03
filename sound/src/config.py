@@ -14,11 +14,11 @@ Config = AttrDict({
         'height': 600
     },
     'particle': {
-        'color': (255, 255, 0),
-        'r': 2,
-        'v_max': 10
+        'color': (255, 255, 255),
+        'r': 4,
+        'v_max': 5
     },
     'simulation': {
-        'num_particles': 1000
+        'num_particles': 10
     }
 })

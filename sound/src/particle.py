@@ -1,11 +1,13 @@
 from random import random, randint
 
+import numpy as np
 import pygame as pg
 
 from src.config import Config
 
-colors = [(255, 255, 0), (0, 255, 255), (255, 0, 255),
-          (0, 0, 255), (0, 255, 0), (255, 0, 0)]
+
+# todo colors
+# colors = [(255, 255, 0), (0, 255, 255), (255, 0, 255)]
 
 
 class Particle:
@@ -14,41 +16,57 @@ class Particle:
         self.y = random() * Config.box.height
         self.vx = (random() - 0.5) * 2 * Config.particle.v_max
         self.vy = (random() - 0.5) * 2 * Config.particle.v_max
-        self.colors = [colors[randint(0, len(colors) - 1)], (0, 0, 0)]
+
+
+def bounce_walls(x, y, vx, vy):
+    # bounce off walls
+    if x < 0:
+        x = -x
+        vx = -vx
+    elif x > Config.game.width:
+        x = 2 * Config.game.width - x
+        vx = -vx
+    if y < 0:
+        y = -y
+        vy = -vy
+    elif y > Config.game.height:
+        y = 2 * Config.game.height - y
+        vy = -vy
+
+    return x, y, vx, vy
 
 
 class Particles:
 
     def __init__(self, display, n):
         self.display = display
-        self.particles = [Particle() for _ in range(n)]
+        self.x = np.random.sample(n) * Config.box.width
+        self.y = np.random.sample(n) * Config.box.height
+        self.vx = 2 * (np.random.sample(n) - 0.5) * Config.particle.v_max
+        self.vy = 2 * (np.random.sample(n) - 0.5) * Config.particle.v_max
 
     def draw(self):
-        for p in self.particles:
+        for x, y in zip(self.x, self.y):
             pg.draw.circle(self.display,
-                           p.colors[0],
-                           (int(p.x), int(p.y)),
+                           Config.particle.color,
+                           (int(x), int(y)),
                            Config.particle.r)
 
+    def bounce_walls(self):
+
+        for pos, vel, high in [(self.x, self.vx, Config.box.width),
+                               (self.y, self.vy, Config.box.height)]:
+            where = pos < 0
+            np.copyto(vel, -vel, where=where)
+            np.copyto(pos, -pos, where=where)
+            where = pos > high
+            np.copyto(vel, -vel, where=where)
+            np.copyto(pos, 2 * high - pos, where=where)
+
     def update(self):
-        for p in self.particles:
+        self.x = self.x + self.vx
+        self.y = self.y + self.vy
 
-            n_x = p.x + p.vx
-            n_y = p.y + p.vy
+        self.bounce_walls()
 
-            if n_x < 0:
-                n_x = -n_x
-                p.vx = -p.vx
-            elif n_x > Config.game.width:
-                n_x = 2 * Config.game.width - n_x
-                p.vx = -p.vx
-
-            if n_y < 0:
-                n_y = -n_y
-                p.vy = -p.vy
-            elif n_y > Config.game.height:
-                n_y = 2 * Config.game.height - n_y
-                p.vy = -p.vy
-
-            p.x = n_x
-            p.y = n_y
+        # todo bounce each other

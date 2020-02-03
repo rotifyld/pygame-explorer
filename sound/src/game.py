@@ -1,3 +1,4 @@
+from datetime import datetime
 from random import random, randint
 
 import pygame as pg
@@ -12,6 +13,16 @@ class Game:
         self.mouse_pos = (0, 0)
         self.particles = Particles(display, Config.simulation.num_particles)
 
+    def update(self):
+        self.particles.update()
+
+    def draw(self):
+        # draw black background
+        self.display.fill((0, 0, 0))
+        self.particles.draw()
+
+        pg.display.update()
+
     def loop(self):
         clock = pg.time.Clock()
 
@@ -23,12 +34,11 @@ class Game:
                     if pg.mouse.get_pressed()[0]:
                         self.mouse_pos = pg.mouse.get_pos()
 
-            # self.grid.loop()
-            self.particles.update()
+            zero_t = datetime.now()
+            self.update()
+            update_t = datetime.now()
+            self.draw()
+            draw_t = datetime.now()
+            print("update takes {}% of time".format(100 * (update_t - zero_t) / (draw_t - zero_t)))
 
-            # self.grid.draw()
-            # self.display.fill(pg.Color(0, 0, 0))
-            self.particles.draw()
-
-            pg.display.update()
-            clock.tick(Config['game']['fps'])
+            clock.tick(Config.game.fps)
