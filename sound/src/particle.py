@@ -15,12 +15,16 @@ class Particles:
         self.display = display
         self.x = np.random.sample(n) * Config.box.width
         self.y = np.random.sample(n) * Config.box.height
+        self.z = np.random.sample(n) * 100
         self.vx = 2 * (np.random.sample(n) - 0.5) * Config.particle.v_max
         self.vy = 2 * (np.random.sample(n) - 0.5) * Config.particle.v_max
-        self.colors = [colors[randint(0, len(colors) - 1)] for _ in range(n)]
+        self.vz = 2 * (np.random.sample(n) - 0.5) * Config.particle.v_max
+        # self.colors = [colors[randint(0, len(colors) - 1)] for _ in range(n)]
 
     def draw(self):
-        for x, y, color in zip(self.x, self.y, self.colors):
+        for x, y, z in zip(self.x, self.y, self.z):
+            color = (255 - (2 * z), 0, 55 + (2 * z))
+
             pg.draw.circle(self.display,
                            color,
                            (int(x), int(y)),
@@ -29,7 +33,8 @@ class Particles:
     def bounce_walls(self):
 
         for pos, vel, high in [(self.x, self.vx, Config.box.width),
-                               (self.y, self.vy, Config.box.height)]:
+                               (self.y, self.vy, Config.box.height),
+                               (self.z, self.vz, 100)]:
             where = pos < 0
             np.copyto(vel, -vel, where=where)
             np.copyto(pos, -pos, where=where)
@@ -40,6 +45,7 @@ class Particles:
     def update(self):
         self.x = self.x + self.vx
         self.y = self.y + self.vy
+        self.z = self.z + self.vz
 
         self.bounce_walls()
 
