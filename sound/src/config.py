@@ -3,22 +3,25 @@ from attrdict import AttrDict
 Config = AttrDict({
     'game': {
         'caption': 'Sound',
-        'height': 600,
         'width': 800,
+        'height': 600,
         'cell_size': 10,
         'fps': 40,
         'epsilon': 0.01
     },
     'box': {
-        'width': 800,
-        'height': 600
+        'x_low': 20,
+        'x_high': 780,
+        'y_low': 20,
+        'y_high': 580,
     },
     'particle': {
         'color': (255, 255, 255),
-        'r': 4,
-        'v_max': 5
+        'r': 2,
+        'v_max': 10
     },
     'simulation': {
-        'num_particles': 10
-    }
+        'num_particles': 1000
+    },
+    'debug': 0
 })
