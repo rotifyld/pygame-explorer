@@ -9,7 +9,7 @@ colors = [(255, 255, 0), (0, 255, 255), (255, 0, 255)]
 
 
 def init_fonts(n):
-    font = pg.font.Font(pg.font.get_default_font(), 20)
+    font = pg.font.Font(pg.font.get_default_font(), Config.debug.label_size)
 
     # now print the text
     return [font.render(str(i), False, (255, 255, 255)) for i in range(n)]
@@ -39,7 +39,10 @@ class Particles:
 
         self.p_collision = np.zeros((1, 2))
 
-        if Config.debug:
+        if Config.debug.collisions:
+            self.num_collisions = []
+
+        if Config.debug.labels:
             self.labels = init_fonts(n)
 
     def draw(self):
@@ -49,7 +52,7 @@ class Particles:
                            (int(x), int(y)),
                            Config.particle.r)
 
-        if Config.debug:
+        if Config.debug.labels:
             r = Config.particle.r
             for label, x, y in zip(self.labels, self.x, self.y):
                 self.display.blit(label, dest=(x + r, y - r))
@@ -66,6 +69,13 @@ class Particles:
             np.copyto(pos, 2 * high - pos, where=where)
 
     def bounce_each_other(self):
+
+        if Config.debug.collisions:
+            if len(self.num_collisions) < Config.debug.print_every:
+                self.num_collisions.append(0)
+            else:
+                print('Avg. {0:.0f} collisions per step'.format(np.mean(self.num_collisions)))
+                self.num_collisions = [0]
 
         dist_x = np.abs(np.subtract.outer(self.nx, self.nx))
         dist_y = np.abs(np.subtract.outer(self.ny, self.ny))
@@ -86,6 +96,8 @@ class Particles:
                     exact_distance = np.linalg.norm(pos1 - pos2)
 
                     if exact_distance < 2 * Config.particle.r:
+                        if Config.debug.collisions:
+                            self.num_collisions[-1] += 1
                         v1 = np.array([self.vx[m], self.vy[m]])
                         v2 = np.array([self.vx[n], self.vy[n]])
 
@@ -99,7 +111,7 @@ class Particles:
                         self.nx = self.x + self.vx
                         self.ny = self.y + self.vy
 
-        if Config.debug:
+        if Config.debug.labels:
             is_new_collision = self.p_collision.data != potential_collisions.data
             self.p_collision = potential_collisions
 

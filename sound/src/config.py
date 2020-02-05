@@ -6,7 +6,7 @@ Config = AttrDict({
         'width': 800,
         'height': 600,
         'cell_size': 10,
-        'fps': 40,
+        'fps': 30,
         'epsilon': 0.01
     },
     'box': {
@@ -23,5 +23,11 @@ Config = AttrDict({
     'simulation': {
         'num_particles': 1000
     },
-    'debug': 0
+    'debug': {
+        'print_every': 30,
+        'benchmark': True,
+        'collisions': True,
+        'labels': True,
+        'label_size': 10
+    }
 })
